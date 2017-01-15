@@ -15,6 +15,7 @@ buildscript {
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'maven-publish'
 
 jar {
 	baseName = 'authentication-service'
@@ -47,5 +48,28 @@ dependencies {
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.SR3"
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+}
+publishing {
+	repositories {
+		maven {
+			credentials {
+				username 'admin'
+				password 'admin123'
+			}
+			if (project.version.endsWith('-SNAPSHOT')) {
+				url 'http://192.168.33.10:8081/nexus/content/repositories/snapshots/'
+			} else {
+				url 'http://192.168.33.10:8081/nexus/content/repositories/releases/'
+			}
+		}
 	}
 }
